@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านนํ้าพี่เฟิร์ส - สั่งล่วงหน้า</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400;500;600&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', 'Kanit', sans-serif;
+            background: #1a4d2e;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(123, 237, 159, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(168, 230, 207, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        header::before {
+            content: '☕';
+            position: absolute;
+            top: 10px;
+            left: 15%;
+            font-size: 2em;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        header::after {
+            content: '🍹';
+            position: absolute;
+            bottom: 10px;
+            right: 15%;
+            font-size: 2em;
+            opacity: 0.3;
+            animation: float 3s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #ffffff 0%, #7bed9f 50%, #a8e6cf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            font-family: 'Kanit', sans-serif;
+            text-shadow: 0 0 30px rgba(123, 237, 159, 0.3);
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #a8e6cf;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .menu-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #ffffff;
+            margin-bottom: 12px;
+            font-weight: 500;
+            font-family: 'Kanit', sans-serif;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #7bed9f, #a8e6cf);
+            border-radius: 2px;
+        }
+
+        .menu-section h2 {
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            color: #a8e6cf;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+            font-weight: 300;
+            margin-top: 15px;
+        }
+
+        .drinks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .drinks-grid .drink-card:nth-child(1) { animation-delay: 0.1s; }
+        .drinks-grid .drink-card:nth-child(2) { animation-delay: 0.2s; }
+        .drinks-grid .drink-card:nth-child(3) { animation-delay: 0.3s; }
+        .drinks-grid .drink-card:nth-child(4) { animation-delay: 0.4s; }
+        .drinks-grid .drink-card:nth-child(5) { animation-delay: 0.5s; }
+        .drinks-grid .drink-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .drink-card {
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            color: #333;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .drink-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(123, 237, 159, 0.3);
+        }
+
+        @keyframes slideInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .drink-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            border-bottom: 1px solid #e0e0e0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .drink-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .drink-card:hover .drink-image::before {
+            left: 100%;
+        }
+
+        .drink-image img {
+            transition: transform 0.3s ease;
+        }
+
+        .drink-card:hover .drink-image img {
+            transform: scale(1.1);
+        }
+
+        .drink-content {
+            padding: 20px;
+        }
+
+        .drink-name {
+            font-size: 1.25em;
+            color: #1a4d2e;
+            margin-bottom: 10px;
+            font-weight: 500;
+            font-family: 'Kanit', sans-serif;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .drink-name::before {
+            content: '🥤';
+            position: absolute;
+            left: 0;
+            font-size: 0.9em;
+        }
+
+        .price-info {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            background: #f5f5f5;
+            padding: 8px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+        }
+
+        .size-options {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .size-btn {
+            flex: 1;
+            padding: 8px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+            font-weight: 400;
+        }
+
+        .size-btn:hover {
+            border-color: #1a4d2e;
+        }
+
+        .size-btn.active {
+            background: #1a4d2e;
+            color: #fff;
+            border-color: #1a4d2e;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px;
+            color: #333;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .qty-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .qty-display {
+            font-size: 1.1em;
+            min-width: 30px;
+            text-align: center;
+            color: #333;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a4a 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.95em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .add-to-cart:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 77, 46, 0.4);
+        }
+
+        .add-to-cart:active {
+            transform: scale(0.95);
+        }
+
+        .cart-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            color: #333;
+            margin-top: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e8f5e9;
+            animation: slideInScale 0.6s ease-out;
+        }
+
+        .cart-title {
+            font-size: 1.8em;
+            color: #1a4d2e;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-family: 'Kanit', sans-serif;
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .cart-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #1a4d2e, #2d7a4a);
+            border-radius: 2px;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+
+        .cart-item {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #7bed9f;
+            transition: all 0.3s ease;
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .cart-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+            color: #1a4d2e;
+            margin-bottom: 5px;
+            font-size: 1.05em;
+        }
+
+        .cart-item-name::before {
+            content: '✓ ';
+            color: #7bed9f;
+            font-weight: bold;
+        }
+
+        .cart-item-details {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .cart-item-remove {
+            background: #ffe5e5;
+            border: none;
+            color: #d32f2f;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.85em;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .cart-item-remove:hover {
+            background: #d32f2f;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .cart-total {
+            border-top: 2px solid #7bed9f;
+            padding-top: 20px;
+            margin-top: 20px;
+            font-size: 1.5em;
+            text-align: right;
+            color: #1a4d2e;
+            font-weight: 600;
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 20px;
+            border-radius: 8px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .cart-total::before {
+            content: '💰 ';
+        }
+
+        .checkout-section {
+            margin-top: 30px;
+        }
+
+        .customer-info {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            background: #fafafa;
+            color: #333;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7bed9f;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(123, 237, 159, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .payment-methods {
+            margin-top: 20px;
+        }
+
+        .payment-title {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .payment-btn {
+            flex: 1;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(123, 237, 159, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .payment-btn:hover {
+            border-color: #7bed9f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-btn:hover::before {
+            left: 100%;
+        }
+
+        .payment-btn.active {
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a4a 100%);
+            color: #fff;
+            border-color: #1a4d2e;
+            box-shadow: 0 6px 20px rgba(26, 77, 46, 0.3);
+        }
+
+        .qr-code-container {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+            background: linear-gradient(135deg, #f0f7f4 0%, #e8f5e9 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px dashed #7bed9f;
+        }
+
+        .qr-code-container.show {
+            display: block;
+        }
+
+        .qr-code-container img {
+            max-width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border: 3px solid #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .qr-code-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .confirm-order-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a4a 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: 'Kanit', sans-serif;
+            box-shadow: 0 6px 20px rgba(26, 77, 46, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .confirm-order-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .confirm-order-btn:hover:not(:disabled)::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .confirm-order-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26, 77, 46, 0.4);
+        }
+
+        .confirm-order-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .confirm-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .drinks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .payment-options {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ร้านนํ้าพี่เฟิร์ส</h1>
+            <p class="subtitle">สั่งเครื่องดื่มล่วงหน้า</p>
+            <div style="margin-top: 20px; padding: 12px 20px; background: rgba(255, 255, 255, 0.15); border-radius: 25px; display: inline-block; backdrop-filter: blur(10px); border: 1px solid rgba(123, 237, 159, 0.3);">
+                <span style="font-size: 0.95em; color: #ffffff; letter-spacing: 0.5px;">✨ มีของกินเล็กอยู่หน้าร้าน ✨</span>
+            </div>
+        </header>
+
+        <div class="menu-section">
+            <h2 class="section-title">เครื่องดื่มทั่วไป</h2>
+            <p class="section-subtitle">แก้วเล็ก 10 บาท / แก้วใหญ่ 20 บาท / ปั่น +5 บาท</p>
+            <div class="drinks-grid" id="regularDrinks"></div>
+        </div>
+
+        <div class="menu-section">
+            <h2 class="section-title">เครื่องดื่มพิเศษ</h2>
+            <div class="drinks-grid" id="specialDrinks"></div>
+        </div>
+
+        <div class="cart-section">
+            <h2 class="cart-title">รายการสั่งซื้อ</h2>
+            <div id="cartItems" class="cart-empty">ยังไม่มีรายการสั่งซื้อ</div>
+            <div id="cartTotal" style="display: none;" class="cart-total"></div>
+
+            <div class="checkout-section" id="checkoutSection" style="display: none;">
+                <div class="customer-info">
+                    <div class="form-group">
+                        <label>ชื่อ:</label>
+                        <input type="text" id="customerName" placeholder="กรอกชื่อของคุณ">
+                    </div>
+                    <div class="form-group">
+                        <label>เบอร์โทร:</label>
+                        <input type="tel" id="customerPhone" placeholder="กรอกเบอร์โทรศัพท์">
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <p class="payment-title">เลือกวิธีการชำระเงิน</p>
+                    <div class="payment-options">
+                        <button class="payment-btn" id="qrPaymentBtn">QR Code</button>
+                        <button class="payment-btn" id="cashPaymentBtn">จ่ายหน้าร้าน</button>
+                    </div>
+
+                    <div class="qr-code-container" id="qrCodeContainer">
+                        <p style="color: #999; margin-bottom: 15px; font-size: 0.9em;">สแกน QR Code เพื่อชำระเงิน</p>
+                        <img src="qrcode.png" alt="QR Code Payment" style="max-width: 250px; border-radius: 4px;">
+                        <div id="paymentStatus" style="margin-top: 20px; padding: 15px; border-radius: 4px; display: none;">
+                            <p id="paymentStatusText" style="margin: 0; font-size: 0.9em;"></p>
+                        </div>
+                        <button id="checkPaymentBtn" style="margin-top: 15px; padding: 10px 20px; background: #2d7a4a; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; display: none;">
+                            ตรวจสอบการชำระเงิน
+                        </button>
+                    </div>
+                </div>
+
+                <button class="confirm-order-btn" id="confirmOrderBtn" disabled style="opacity: 0.5;">ยืนยันคำสั่งซื้อ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const regularDrinks = [
+            { name: 'เฉาก๊วยนมสด', image: 'drink1.png' },
+            { name: 'ส้ม', image: 'drink2.png' },
+            { name: 'สตอเบอรี่', image: 'drink3.png' },
+            { name: 'อัญชันมะนาว', image: 'drink4.png' },
+            { name: 'มะพร้าว', image: 'drink5.png' },
+            { name: 'นมสด', image: 'drink6.png' },
+            { name: 'โกโก้', image: 'drink7.png' },
+            { name: 'ชาเขียว', image: 'drink8.png' },
+            { name: 'ชาเย็น', image: 'drink9.png' },
+            { name: 'ชานมไต้หวัน', image: 'drink10.png' },
+            { name: 'กาแฟ', image: 'drink11.png' },
+            { name: 'นํ้าอัดลม', image: 'drink12.png' }
+        ];
+
+        const specialDrinks = [
+            { name: 'M150ปีโป้', price: 30, image: 'drink1s.png' },
+            { name: 'นมหมีปีโป้', price: 30, image: 'drink2s.png' },
+            { name: 'เรดี้ปีโป้', price: 30, image: 'drink3s.png' },
+            { name: 'มัทฉะลาเต้', price: 30, image: 'drink4s.png' },
+            { name: 'สตอเบอรี่มัทฉะลาเต้', price: 35, image: 'drink5s.png' }
+        ];
+
+        let cart = [];
+        let selectedPayment = null;
+        let paymentVerified = false;
+        let stockStatus = {};
+
+        // Load stock status from localStorage
+        function loadStockStatus() {
+            stockStatus = JSON.parse(localStorage.getItem('drinkStockStatus')) || {};
+        }
+
+        // Check if drink is available
+        function isDrinkAvailable(drinkName) {
+            return stockStatus[drinkName] !== false;
+        }
+
+        // Load stock status on page load
+        loadStockStatus();
+
+        // Listen for stock updates from admin page
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'drinkStockStatus') {
+                loadStockStatus();
+                initializeDrinks();
+            }
+        });
+
+        function createRegularDrinkCard(drink, index) {
+            const isAvailable = isDrinkAvailable(drink.name);
+            const outOfStockOverlay = !isAvailable ? `
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(220, 53, 69, 0.9); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2em; font-weight: 600; border-radius: 12px 12px 0 0;">
+                    สินค้าหมด
+                </div>
+            ` : '';
+
+            return `
+                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : ''}">
+                    <div class="drink-image" style="position: relative;">
+                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        ${outOfStockOverlay}
+                    </div>
+                    <div class="drink-content">
+                        <div class="drink-name">${drink.name}</div>
+                        <div class="price-info">เล็ก 10฿ / ใหญ่ 20฿ / ปั่น +5฿</div>
+                        <div class="size-options" id="size-${index}">
+                            <button class="size-btn active" data-size="เล็ก" data-price="10" ${!isAvailable ? 'disabled' : ''}>เล็ก</button>
+                            <button class="size-btn" data-size="ใหญ่" data-price="20" ${!isAvailable ? 'disabled' : ''}>ใหญ่</button>
+                            <button class="size-btn" data-size="ปั่น" data-price="5" ${!isAvailable ? 'disabled' : ''}>ปั่น +5฿</button>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="decreaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>-</button>
+                            <span class="qty-display" id="qty-${index}">1</span>
+                            <button class="qty-btn" onclick="increaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>+</button>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('${drink.name}', ${index}, 'regular')" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            ${isAvailable ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createSpecialDrinkCard(drink, index) {
+            const isAvailable = isDrinkAvailable(drink.name);
+            const outOfStockOverlay = !isAvailable ? `
+                <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(220, 53, 69, 0.9); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2em; font-weight: 600; border-radius: 12px 12px 0 0;">
+                    สินค้าหมด
+                </div>
+            ` : '';
+
+            return `
+                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : ''}">
+                    <div class="drink-image" style="position: relative;">
+                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        ${outOfStockOverlay}
+                    </div>
+                    <div class="drink-content">
+                        <div class="drink-name">${drink.name}</div>
+                        <div class="price-info">${drink.price} บาท</div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="decreaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>-</button>
+                            <span class="qty-display" id="qty-special-${index}">1</span>
+                            <button class="qty-btn" onclick="increaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>+</button>
+                        </div>
+                        <button class="add-to-cart" onclick="addToCart('${drink.name}', 'special-${index}', 'special', ${drink.price})" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                            ${isAvailable ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function initializeDrinks() {
+            const regularContainer = document.getElementById('regularDrinks');
+            const specialContainer = document.getElementById('specialDrinks');
+
+            regularContainer.innerHTML = regularDrinks.map((drink, i) => createRegularDrinkCard(drink, i)).join('');
+            specialContainer.innerHTML = specialDrinks.map((drink, i) => createSpecialDrinkCard(drink, i)).join('');
+
+            // Add click handlers for size buttons
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        function increaseQty(id) {
+            const qtyElement = document.getElementById(`qty-${id}`);
+            qtyElement.textContent = parseInt(qtyElement.textContent) + 1;
+        }
+
+        function decreaseQty(id) {
+            const qtyElement = document.getElementById(`qty-${id}`);
+            const currentQty = parseInt(qtyElement.textContent);
+            if (currentQty > 1) {
+                qtyElement.textContent = currentQty - 1;
+            }
+        }
+
+        function addToCart(drinkName, id, type, specialPrice = null) {
+            // Check if drink is available
+            if (!isDrinkAvailable(drinkName)) {
+                alert('ขออภัย ' + drinkName + ' หมดแล้วค่ะ');
+                return;
+            }
+
+            let price = 0;
+            let size = '';
+            let quantity = parseInt(document.getElementById(`qty-${id}`).textContent);
+
+            if (type === 'regular') {
+                const sizeButtons = document.getElementById(`size-${id}`).querySelectorAll('.size-btn');
+                let selectedSize = null;
+                sizeButtons.forEach(btn => {
+                    if (btn.classList.contains('active')) {
+                        selectedSize = btn;
+                    }
+                });
+
+                size = selectedSize.dataset.size;
+                const basePrice = parseInt(selectedSize.dataset.price);
+                
+                if (size === 'ปั่น') {
+                    // Get the base size price (default to ใหญ่)
+                    price = 20 + 5;
+                } else {
+                    price = basePrice;
+                }
+            } else {
+                price = specialPrice;
+                size = 'แก้ว';
+            }
+
+            const item = {
+                name: drinkName,
+                size: size,
+                price: price,
+                quantity: quantity,
+                total: price * quantity
+            };
+
+            cart.push(item);
+            updateCart();
+
+            // Reset quantity to 1
+            document.getElementById(`qty-${id}`).textContent = '1';
+        }
+
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartTotalContainer = document.getElementById('cartTotal');
+            const checkoutSection = document.getElementById('checkoutSection');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="cart-empty">ยังไม่มีรายการสั่งซื้อ</div>';
+                cartTotalContainer.style.display = 'none';
+                checkoutSection.style.display = 'none';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = cart.map((item, index) => `
+                <div class="cart-item">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-details">
+                            ${item.size} | จำนวน: ${item.quantity} | ราคา: ${item.total} บาท
+                        </div>
+                    </div>
+                    <button class="cart-item-remove" onclick="removeFromCart(${index})">ลบ</button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + item.total, 0);
+            cartTotalContainer.innerHTML = `ยอดรวม: ${total} บาท`;
+            cartTotalContainer.style.display = 'block';
+            checkoutSection.style.display = 'block';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        // Payment method selection
+        document.getElementById('qrPaymentBtn').addEventListener('click', function() {
+            selectedPayment = 'qr';
+            paymentVerified = false;
+            document.getElementById('qrPaymentBtn').classList.add('active');
+            document.getElementById('cashPaymentBtn').classList.remove('active');
+            document.getElementById('qrCodeContainer').classList.add('show');
+            document.getElementById('checkPaymentBtn').style.display = 'block';
+            document.getElementById('paymentStatus').style.display = 'none';
+            updateConfirmButton();
+        });
+
+        document.getElementById('cashPaymentBtn').addEventListener('click', function() {
+            selectedPayment = 'cash';
+            paymentVerified = false;
+            document.getElementById('cashPaymentBtn').classList.add('active');
+            document.getElementById('qrPaymentBtn').classList.remove('active');
+            document.getElementById('qrCodeContainer').classList.remove('show');
+            updateConfirmButton();
+        });
+
+        // Payment verification function
+        async function verifyPayment(amount) {
+            // ===== REPLACE THIS SECTION WITH YOUR ACTUAL PAYMENT API =====
+            // Example API structure - you need to replace with your payment gateway
+            
+            const paymentStatusDiv = document.getElementById('paymentStatus');
+            const paymentStatusText = document.getElementById('paymentStatusText');
+            
+            try {
+                paymentStatusDiv.style.display = 'block';
+                paymentStatusDiv.style.background = '#fff3cd';
+                paymentStatusDiv.style.border = '1px solid #ffc107';
+                paymentStatusText.style.color = '#856404';
+                paymentStatusText.textContent = 'กำลังตรวจสอบการชำระเงิน...';
+                
+                // EXAMPLE API CALL - Replace with your actual payment API
+                // const response = await fetch('YOUR_PAYMENT_API_URL', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json',
+                //         'Authorization': 'Bearer YOUR_API_KEY'
+                //     },
+                //     body: JSON.stringify({
+                //         amount: amount,
+                //         reference: 'ORDER_' + Date.now(),
+                //         // Add other required fields from your payment gateway
+                //     })
+                // });
+                // const data = await response.json();
+                
+                // SIMULATION - Replace this with actual API response check
+                // For demo: randomly succeed after 2 seconds
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                const isPaymentSuccess = Math.random() > 0.3; // Simulate 70% success rate
+                
+                if (isPaymentSuccess) {
+                    // Payment verified successfully
+                    paymentVerified = true;
+                    paymentStatusDiv.style.background = '#d4edda';
+                    paymentStatusDiv.style.border = '1px solid #28a745';
+                    paymentStatusText.style.color = '#155724';
+                    paymentStatusText.textContent = '✓ ชำระเงินสำเร็จ! กรุณายืนยันคำสั่งซื้อ';
+                    document.getElementById('checkPaymentBtn').style.display = 'none';
+                    updateConfirmButton();
+                } else {
+                    // Payment not found
+                    paymentVerified = false;
+                    paymentStatusDiv.style.background = '#f8d7da';
+                    paymentStatusDiv.style.border = '1px solid #dc3545';
+                    paymentStatusText.style.color = '#721c24';
+                    paymentStatusText.textContent = '✗ ยังไม่พบการชำระเงิน กรุณาลองอีกครั้ง';
+                    updateConfirmButton();
+                }
+                
+            } catch (error) {
+                console.error('Payment verification error:', error);
+                paymentStatusDiv.style.background = '#f8d7da';
+                paymentStatusDiv.style.border = '1px solid #dc3545';
+                paymentStatusText.style.color = '#721c24';
+                paymentStatusText.textContent = '✗ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง';
+                paymentVerified = false;
+                updateConfirmButton();
+            }
+        }
+
+        // Check payment button handler
+        document.getElementById('checkPaymentBtn').addEventListener('click', function() {
+            const total = cart.reduce((sum, item) => sum + item.total, 0);
+            verifyPayment(total);
+        });
+
+        // Update confirm button state
+        function updateConfirmButton() {
+            const confirmBtn = document.getElementById('confirmOrderBtn');
+            
+            if (!selectedPayment) {
+                confirmBtn.disabled = true;
+                confirmBtn.style.opacity = '0.5';
+                return;
+            }
+            
+            if (selectedPayment === 'qr') {
+                if (paymentVerified) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = '1';
+                } else {
+                    confirmBtn.disabled = true;
+                    confirmBtn.style.opacity = '0.5';
+                }
+            } else if (selectedPayment === 'cash') {
+                confirmBtn.disabled = false;
+                confirmBtn.style.opacity = '1';
+            }
+        }
+
+        // Add event listener for payment confirmation checkbox
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'paymentConfirm') {
+                updateConfirmButton();
+            }
+        });
+
+        // Confirm order
+        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+
+            if (!name || !phone) {
+                alert('กรุณากรอกชื่อและเบอร์โทรศัพท์');
+                return;
+            }
+
+            if (!selectedPayment) {
+                alert('กรุณาเลือกวิธีการชำระเงิน');
+                return;
+            }
+
+            // Check if QR payment is selected and verified
+            if (selectedPayment === 'qr' && !paymentVerified) {
+                alert('กรุณาชำระเงินและตรวจสอบการชำระเงินก่อนยืนยันคำสั่งซื้อ');
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => sum + item.total, 0);
+            const orderDetails = cart.map(item => 
+                `${item.name} (${item.size}) x${item.quantity} = ${item.total}฿`
+            ).join('\n');
+
+            const paymentMethod = selectedPayment === 'qr' ? 'QR Code (ชำระแล้ว)' : 'จ่ายหน้าร้าน';
+
+            // Save order to localStorage for admin page
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            const newOrder = {
+                id: Date.now(),
+                customerName: name,
+                customerPhone: phone,
+                items: cart,
+                total: total,
+                paymentMethod: selectedPayment,
+                status: 'pending',
+                time: new Date().toLocaleString('th-TH')
+            };
+            orders.push(newOrder);
+            localStorage.setItem('orders', JSON.stringify(orders));
+
+            alert(`ยืนยันคำสั่งซื้อสำเร็จ!\n\nชื่อ: ${name}\nเบอร์: ${phone}\n\nรายการสั่งซื้อ:\n${orderDetails}\n\nยอดรวม: ${total} บาท\nวิธีชำระเงิน: ${paymentMethod}\n\nขอบคุณที่ใช้บริการค่ะ!`);
+
+            // Reset
+            cart = [];
+            selectedPayment = null;
+            paymentVerified = false;
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('qrPaymentBtn').classList.remove('active');
+            document.getElementById('cashPaymentBtn').classList.remove('active');
+            document.getElementById('qrCodeContainer').classList.remove('show');
+            document.getElementById('paymentStatus').style.display = 'none';
+            document.getElementById('checkPaymentBtn').style.display = 'none';
+            updateCart();
+            updateConfirmButton();
+        });
+
+        // Initialize on load
+        initializeDrinks();
+    </script>
+</body>
+</html>
