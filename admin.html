@@ -503,8 +503,17 @@
             { name: 'ชาเขียว', image: 'drink8.png' },
             { name: 'ชาเย็น', image: 'drink9.png' },
             { name: 'ชานมไต้หวัน', image: 'drink10.png' },
-            { name: 'กาแฟ', image: 'drink11.png' },
-            { name: 'นํ้าอัดลม', image: 'drink12.png' }
+            { name: 'กาแฟ', image: 'drink11.png' }
+        ];
+
+        const sodaFlavors = [
+            { name: 'นํ้าเขียว', category: 'นํ้าอัดลม' },
+            { name: 'นํ้าส้ม', category: 'นํ้าอัดลม' },
+            { name: 'นํ้าแดง', category: 'นํ้าอัดลม' },
+            { name: 'บลูฮาวาย', category: 'นํ้าอัดลม' },
+            { name: 'โคล่า', category: 'นํ้าอัดลม' },
+            { name: 'องุ่น', category: 'นํ้าอัดลม' },
+            { name: 'กีวี่', category: 'นํ้าอัดลม' }
         ];
 
         const specialDrinks = [
@@ -521,7 +530,7 @@
 
         // Initialize stock status
         function initializeStock() {
-            [...regularDrinks, ...specialDrinks].forEach(drink => {
+            [...regularDrinks, ...sodaFlavors, ...specialDrinks].forEach(drink => {
                 if (stockStatus[drink.name] === undefined) {
                     stockStatus[drink.name] = true; // true = available
                 }
@@ -588,6 +597,31 @@
                 `;
             }).join('');
 
+            // Add soda flavors section
+            regularContainer.innerHTML += `
+                <div style="grid-column: 1 / -1; margin-top: 20px; margin-bottom: 10px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+                    <h3 style="color: #1a4d2e; font-size: 1.1em; margin-bottom: 15px;">🥤 นํ้าอัดลม (รสต่างๆ)</h3>
+                </div>
+            `;
+
+            regularContainer.innerHTML += sodaFlavors.map(drink => {
+                const isAvailable = stockStatus[drink.name];
+                return `
+                    <div class="stock-item ${!isAvailable ? 'out-of-stock' : ''}">
+                        <div class="stock-info">
+                            <div class="stock-name">${drink.name}</div>
+                            <div class="stock-status ${isAvailable ? 'available' : 'unavailable'}">
+                                ${isAvailable ? '✓ มีสินค้า' : '✗ สินค้าหมด'}
+                            </div>
+                        </div>
+                        <button class="stock-toggle ${isAvailable ? 'available' : 'unavailable'}" 
+                                onclick="toggleStock('${drink.name}')">
+                            ${isAvailable ? 'ปิดขาย' : 'เปิดขาย'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+
             specialContainer.innerHTML = specialDrinks.map(drink => {
                 const isAvailable = stockStatus[drink.name];
                 return `
@@ -635,7 +669,7 @@
                     <div class="order-items">
                         ${order.items.map(item => `
                             <div class="order-item">
-                                ${item.name} (${item.size}) x${item.quantity} = ${item.total}฿
+                                ${item.name}${item.flavor ? ' (' + item.flavor + ')' : ''} (${item.size}) x${item.quantity} = ${item.total}฿
                             </div>
                         `).join('')}
                     </div>

@@ -536,6 +536,13 @@
             color: #999;
         }
 
+        select:focus {
+            outline: none;
+            border-color: #7bed9f !important;
+            background: #fff !important;
+            box-shadow: 0 0 0 4px rgba(123, 237, 159, 0.1) !important;
+        }
+
         .payment-methods {
             margin-top: 20px;
         }
@@ -808,6 +815,23 @@
                 </div>
             ` : '';
 
+            // Check if this is นํ้าอัดลม to add flavor selection
+            const flavorSelection = drink.name === 'นํ้าอัดลม' ? `
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; color: #666; font-size: 0.9em; margin-bottom: 5px;">เลือกรส:</label>
+                    <select id="flavor-${index}" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #fafafa; color: #333; font-size: 0.95em; transition: all 0.3s ease;" ${!isAvailable ? 'disabled' : ''}>
+                        <option value="นํ้าเขียว" ${!isDrinkAvailable('นํ้าเขียว') ? 'disabled style="color: #999;"' : ''}>นํ้าเขียว ${!isDrinkAvailable('นํ้าเขียว') ? '(หมด)' : ''}</option>
+                        <option value="นํ้าส้ม" ${!isDrinkAvailable('นํ้าส้ม') ? 'disabled style="color: #999;"' : ''}>นํ้าส้ม ${!isDrinkAvailable('นํ้าส้ม') ? '(หมด)' : ''}</option>
+                        <option value="นํ้าแดง" ${!isDrinkAvailable('นํ้าแดง') ? 'disabled style="color: #999;"' : ''}>นํ้าแดง ${!isDrinkAvailable('นํ้าแดง') ? '(หมด)' : ''}</option>
+                        <option value="บลูฮาวาย" ${!isDrinkAvailable('บลูฮาวาย') ? 'disabled style="color: #999;"' : ''}>บลูฮาวาย ${!isDrinkAvailable('บลูฮาวาย') ? '(หมด)' : ''}</option>
+                        <option value="โคล่า" ${!isDrinkAvailable('โคล่า') ? 'disabled style="color: #999;"' : ''}>โคล่า ${!isDrinkAvailable('โคล่า') ? '(หมด)' : ''}</option>
+                        <option value="องุ่น" ${!isDrinkAvailable('องุ่น') ? 'disabled style="color: #999;"' : ''}>องุ่น ${!isDrinkAvailable('องุ่น') ? '(หมด)' : ''}</option>
+                        <option value="กีวี่" ${!isDrinkAvailable('กีวี่') ? 'disabled style="color: #999;"' : ''}>กีวี่ ${!isDrinkAvailable('กีวี่') ? '(หมด)' : ''}</option>
+                        <option value="สุ่ม">สุ่ม (Random)</option>
+                    </select>
+                </div>
+            ` : '';
+
             return `
                 <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : ''}">
                     <div class="drink-image" style="position: relative;">
@@ -817,6 +841,7 @@
                     <div class="drink-content">
                         <div class="drink-name">${drink.name}</div>
                         <div class="price-info">เล็ก 10฿ / ใหญ่ 20฿ / ปั่น +5฿</div>
+                        ${flavorSelection}
                         <div class="size-options" id="size-${index}">
                             <button class="size-btn active" data-size="เล็ก" data-price="10" ${!isAvailable ? 'disabled' : ''}>เล็ก</button>
                             <button class="size-btn" data-size="ใหญ่" data-price="20" ${!isAvailable ? 'disabled' : ''}>ใหญ่</button>
@@ -904,6 +929,7 @@
 
             let price = 0;
             let size = '';
+            let flavor = '';
             let quantity = parseInt(document.getElementById(`qty-${id}`).textContent);
 
             if (type === 'regular') {
@@ -924,6 +950,20 @@
                 } else {
                     price = basePrice;
                 }
+
+                // Check if this is นํ้าอัดลม and get flavor
+                if (drinkName === 'นํ้าอัดลม') {
+                    const flavorSelect = document.getElementById(`flavor-${id}`);
+                    if (flavorSelect) {
+                        flavor = flavorSelect.value;
+                        
+                        // Check if the selected flavor is available (except for "สุ่ม")
+                        if (flavor !== 'สุ่ม' && !isDrinkAvailable(flavor)) {
+                            alert('ขออภัย ' + flavor + ' หมดแล้วค่ะ กรุณาเลือกรสอื่น');
+                            return;
+                        }
+                    }
+                }
             } else {
                 price = specialPrice;
                 size = 'แก้ว';
@@ -932,6 +972,7 @@
             const item = {
                 name: drinkName,
                 size: size,
+                flavor: flavor,
                 price: price,
                 quantity: quantity,
                 total: price * quantity
@@ -959,7 +1000,7 @@
             cartItemsContainer.innerHTML = cart.map((item, index) => `
                 <div class="cart-item">
                     <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-name">${item.name}${item.flavor ? ' (' + item.flavor + ')' : ''}</div>
                         <div class="cart-item-details">
                             ${item.size} | จำนวน: ${item.quantity} | ราคา: ${item.total} บาท
                         </div>
@@ -1125,7 +1166,7 @@
 
             const total = cart.reduce((sum, item) => sum + item.total, 0);
             const orderDetails = cart.map(item => 
-                `${item.name} (${item.size}) x${item.quantity} = ${item.total}฿`
+                `${item.name}${item.flavor ? ' (' + item.flavor + ')' : ''} (${item.size}) x${item.quantity} = ${item.total}฿`
             ).join('\n');
 
             const paymentMethod = selectedPayment === 'qr' ? 'QR Code (ชำระแล้ว)' : 'จ่ายหน้าร้าน';
