@@ -739,6 +739,15 @@
                 flex-direction: column;
             }
         }
+
+        #confirmSlipBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        #confirmSlipBtn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -1089,73 +1098,98 @@
 
         // Payment verification function
         async function verifyPayment(amount) {
-            // ===== REPLACE THIS SECTION WITH YOUR ACTUAL PAYMENT API =====
-            // Example API structure - you need to replace with your payment gateway
+            // Show slip upload interface instead of API verification
+            showSlipUpload();
+        }
+
+        function showSlipUpload() {
+            const qrContainer = document.getElementById('qrCodeContainer');
             
+            // Check if slip upload already exists
+            if (document.getElementById('slipUploadSection')) {
+                return;
+            }
+
+            const slipUploadHTML = `
+                <div id="slipUploadSection" style="margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px; border: 2px dashed #7bed9f;">
+                    <p style="color: #666; margin-bottom: 15px; text-align: center; font-weight: 500;">
+                        📸 อัพโหลดสลิปการโอนเงิน
+                    </p>
+                    <input type="file" accept="image/*" id="paymentSlip" 
+                           style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; 
+                                  background: white; margin-bottom: 15px; cursor: pointer;">
+                    <div id="slipPreview" style="text-align: center; margin: 15px 0;"></div>
+                    <button onclick="confirmPaymentSlip()" id="confirmSlipBtn"
+                            style="width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745, #20c997); 
+                                   color: white; border: none; border-radius: 8px; cursor: pointer; 
+                                   font-weight: 600; font-size: 1em; transition: all 0.3s ease;">
+                        ✓ ยืนยันการชำระเงิน
+                    </button>
+                </div>
+            `;
+
+            qrContainer.insertAdjacentHTML('beforeend', slipUploadHTML);
+            document.getElementById('checkPaymentBtn').style.display = 'none';
+
+            // Add preview functionality
+            document.getElementById('paymentSlip').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        document.getElementById('slipPreview').innerHTML = `
+                            <img src="${event.target.result}" 
+                                 style="max-width: 100%; max-height: 200px; border-radius: 8px; 
+                                        border: 2px solid #7bed9f; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function confirmPaymentSlip() {
+            const slipInput = document.getElementById('paymentSlip');
             const paymentStatusDiv = document.getElementById('paymentStatus');
             const paymentStatusText = document.getElementById('paymentStatusText');
             
-            try {
-                paymentStatusDiv.style.display = 'block';
-                paymentStatusDiv.style.background = '#fff3cd';
-                paymentStatusDiv.style.border = '1px solid #ffc107';
-                paymentStatusText.style.color = '#856404';
-                paymentStatusText.textContent = 'กำลังตรวจสอบการชำระเงิน...';
-                
-                // EXAMPLE API CALL - Replace with your actual payment API
-                // const response = await fetch('YOUR_PAYMENT_API_URL', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         'Authorization': 'Bearer YOUR_API_KEY'
-                //     },
-                //     body: JSON.stringify({
-                //         amount: amount,
-                //         reference: 'ORDER_' + Date.now(),
-                //         // Add other required fields from your payment gateway
-                //     })
-                // });
-                // const data = await response.json();
-                
-                // SIMULATION - Replace this with actual API response check
-                // For demo: randomly succeed after 2 seconds
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                const isPaymentSuccess = Math.random() > 0.3; // Simulate 70% success rate
-                
-                if (isPaymentSuccess) {
-                    // Payment verified successfully
-                    paymentVerified = true;
-                    paymentStatusDiv.style.background = '#d4edda';
-                    paymentStatusDiv.style.border = '1px solid #28a745';
-                    paymentStatusText.style.color = '#155724';
-                    paymentStatusText.textContent = '✓ ชำระเงินสำเร็จ! กรุณายืนยันคำสั่งซื้อ';
-                    document.getElementById('checkPaymentBtn').style.display = 'none';
-                    updateConfirmButton();
-                } else {
-                    // Payment not found
-                    paymentVerified = false;
-                    paymentStatusDiv.style.background = '#f8d7da';
-                    paymentStatusDiv.style.border = '1px solid #dc3545';
-                    paymentStatusText.style.color = '#721c24';
-                    paymentStatusText.textContent = '✗ ยังไม่พบการชำระเงิน กรุณาลองอีกครั้ง';
-                    updateConfirmButton();
-                }
-                
-            } catch (error) {
-                console.error('Payment verification error:', error);
-                paymentStatusDiv.style.background = '#f8d7da';
-                paymentStatusDiv.style.border = '1px solid #dc3545';
-                paymentStatusText.style.color = '#721c24';
-                paymentStatusText.textContent = '✗ เกิดข้อผิดพลาด กรุณาลองอีกครั้ง';
-                paymentVerified = false;
-                updateConfirmButton();
+            if (slipInput.files.length === 0) {
+                alert('กรุณาเลือกรูปสลิปการโอนเงิน');
+                return;
             }
+
+            // Convert image to base64 for storage
+            const file = slipInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                // Store slip data temporarily
+                const slipData = {
+                    image: e.target.result,
+                    uploadTime: new Date().toLocaleString('th-TH')
+                };
+                
+                // Store in sessionStorage for this order
+                sessionStorage.setItem('paymentSlip', JSON.stringify(slipData));
+                
+                paymentVerified = true;
+                paymentStatusDiv.style.display = 'block';
+                paymentStatusDiv.style.background = '#d4edda';
+                paymentStatusDiv.style.border = '1px solid #28a745';
+                paymentStatusText.style.color = '#155724';
+                paymentStatusText.textContent = '✓ ได้รับสลิปแล้ว รอการตรวจสอบจากร้าน';
+                
+                document.getElementById('slipUploadSection').style.display = 'none';
+                updateConfirmButton();
+            };
+            
+            reader.readAsDataURL(file);
         }
 
         // Check payment button handler
         document.getElementById('checkPaymentBtn').addEventListener('click', function() {
             const total = cart.reduce((sum, item) => sum + item.total, 0);
-            verifyPayment(total);
+            showSlipUpload();
         });
 
         // Update confirm button state
@@ -1219,6 +1253,11 @@
 
             // Save order to localStorage for admin page
             const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            
+            // Get payment slip if exists
+            const paymentSlipData = sessionStorage.getItem('paymentSlip');
+            const paymentSlip = paymentSlipData ? JSON.parse(paymentSlipData) : null;
+            
             const newOrder = {
                 id: Date.now(),
                 customerName: name,
@@ -1226,11 +1265,15 @@
                 items: cart,
                 total: total,
                 paymentMethod: selectedPayment,
+                paymentSlip: paymentSlip,
                 status: 'pending',
                 time: new Date().toLocaleString('th-TH')
             };
             orders.push(newOrder);
             localStorage.setItem('orders', JSON.stringify(orders));
+
+            // Clear payment slip from session
+            sessionStorage.removeItem('paymentSlip');
 
             alert(`ยืนยันคำสั่งซื้อสำเร็จ!\n\nชื่อ: ${name}\nเบอร์: ${phone}\n\nรายการสั่งซื้อ:\n${orderDetails}\n\nยอดรวม: ${total} บาท\nวิธีชำระเงิน: ${paymentMethod}\n\nขอบคุณที่ใช้บริการค่ะ!`);
 
