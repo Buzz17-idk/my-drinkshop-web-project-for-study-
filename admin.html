@@ -726,9 +726,22 @@
                     <div class="order-footer">
                         <div class="order-total">ยอดรวม: ${order.total}฿</div>
                         <div class="payment-status ${order.paymentMethod === 'qr' ? 'paid' : 'pending'}">
-                            ${order.paymentMethod === 'qr' ? 'ชำระแล้ว' : 'จ่ายหน้าร้าน'}
+                            ${order.paymentMethod === 'qr' ? 'QR Code' : 'จ่ายหน้าร้าน'}
                         </div>
                     </div>
+                    ${order.paymentSlip ? `
+                        <div style="margin-top: 15px; padding: 15px; background: #f0f7f4; border-radius: 8px; border: 2px solid #7bed9f;">
+                            <p style="color: #1a4d2e; font-weight: 600; margin-bottom: 10px;">📸 สลิปการโอนเงิน:</p>
+                            <button onclick="viewPaymentSlip(${order.id})" 
+                                    style="padding: 8px 16px; background: #7bed9f; color: #1a4d2e; border: none; 
+                                           border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.3s ease;">
+                                ดูสลิป
+                            </button>
+                            <span style="color: #666; font-size: 0.85em; margin-left: 10px;">
+                                อัพโหลดเมื่อ: ${order.paymentSlip.uploadTime}
+                            </span>
+                        </div>
+                    ` : ''}
                     <div class="order-actions">
                         <button class="action-btn complete-btn" onclick="completeOrder(${order.id})">
                             เสร็จสิ้น
@@ -763,6 +776,85 @@
                     alert('ยกเลิกคำสั่งซื้อแล้ว');
                 }
             }
+        }
+
+        function viewPaymentSlip(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order || !order.paymentSlip) {
+                alert('ไม่พบสลิปการโอนเงิน');
+                return;
+            }
+
+            // Create modal to show slip
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 16px; max-width: 90%; max-height: 90%; 
+                            overflow: auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="position: absolute; top: 15px; right: 15px; background: #dc3545; color: white; 
+                                   border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; 
+                                   font-size: 1.2em; font-weight: bold; transition: all 0.3s ease;">
+                        ×
+                    </button>
+                    <h2 style="color: #1a4d2e; margin-bottom: 20px; font-family: 'Kanit', sans-serif;">
+                        สลิปการโอนเงิน - คำสั่งซื้อ #${order.id}
+                    </h2>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <img src="${order.paymentSlip.image}" 
+                             style="max-width: 100%; max-height: 600px; border-radius: 8px; 
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 2px solid #7bed9f;">
+                    </div>
+                    <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                        <p style="color: #666; margin-bottom: 8px;">
+                            <strong style="color: #1a4d2e;">ชื่อลูกค้า:</strong> ${order.customerName}
+                        </p>
+                        <p style="color: #666; margin-bottom: 8px;">
+                            <strong style="color: #1a4d2e;">เบอร์:</strong> ${order.customerPhone}
+                        </p>
+                        <p style="color: #666; margin-bottom: 8px;">
+                            <strong style="color: #1a4d2e;">ยอดรวม:</strong> ${order.total} บาท
+                        </p>
+                        <p style="color: #666;">
+                            <strong style="color: #1a4d2e;">อัพโหลดเมื่อ:</strong> ${order.paymentSlip.uploadTime}
+                        </p>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button onclick="completeOrder(${order.id}); this.closest('div').parentElement.parentElement.remove();" 
+                                style="flex: 1; padding: 12px; background: #28a745; color: white; border: none; 
+                                       border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            ✓ ยืนยันและเสร็จสิ้น
+                        </button>
+                        <button onclick="this.closest('div').parentElement.parentElement.remove()" 
+                                style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; 
+                                       border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1em;">
+                            ปิด
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+
+            // Click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
 
         function updateStats() {
