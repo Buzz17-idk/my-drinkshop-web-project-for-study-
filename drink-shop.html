@@ -38,6 +38,29 @@
             z-index: 0;
         }
 
+        body::after {
+            content: '🥤 ☕ 🍹 🧋 🥛 🍵 🧃 🍊 🍓 🥥 🍋 🍇 🥝 🍎 🍌 🍉 🫐 🍑 🍒 🥤 ☕ 🍹 🧋 🥛 🍵 🧃 🍊 🍓 🥥 🍋 🍇 🥝';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            font-size: 4em;
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: 0;
+            line-height: 2.5;
+            word-spacing: 80px;
+            overflow: hidden;
+            white-space: pre-wrap;
+            animation: floatEmojis 60s linear infinite;
+        }
+
+        @keyframes floatEmojis {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-500px); }
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -57,7 +80,7 @@
             position: absolute;
             top: 10px;
             left: 15%;
-            font-size: 2em;
+            font-size: 4em;
             opacity: 0.3;
             animation: float 3s ease-in-out infinite;
         }
@@ -67,9 +90,32 @@
             position: absolute;
             bottom: 10px;
             right: 15%;
-            font-size: 2em;
+            font-size: 4em;
             opacity: 0.3;
             animation: float 3s ease-in-out infinite 1.5s;
+        }
+
+        /* Additional decorative emojis */
+        .container::before {
+            content: '🧋';
+            position: fixed;
+            top: 25%;
+            left: 5%;
+            font-size: 5em;
+            opacity: 0.15;
+            animation: float 4s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .container::after {
+            content: '🥤';
+            position: fixed;
+            bottom: 20%;
+            right: 8%;
+            font-size: 5em;
+            opacity: 0.15;
+            animation: float 4s ease-in-out infinite 2s;
+            z-index: 0;
         }
 
         @keyframes float {
