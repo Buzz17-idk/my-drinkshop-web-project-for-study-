@@ -576,23 +576,32 @@
             scroll-margin-top: 120px;
         }
 
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         .cart-title {
             font-size: 1.8em;
             color: #1a4d2e;
-            margin-bottom: 25px;
+            margin: 0;
             font-weight: 600;
             font-family: 'Kanit', sans-serif;
             letter-spacing: 1px;
             position: relative;
             padding-bottom: 15px;
+            flex: 1;
         }
 
         .cart-title::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
             width: 80px;
             height: 3px;
             background: linear-gradient(90deg, #1a4d2e, #2d7a4a);
@@ -884,26 +893,25 @@
         }
 
         .download-pdf-btn {
-            width: 100%;
-            padding: 15px;
+            padding: 12px 24px;
             background: linear-gradient(135deg, #dc3545, #c82333);
             border: none;
             border-radius: 12px;
             color: #fff;
-            font-size: 1.1em;
+            font-size: 1em;
             cursor: pointer;
-            margin-top: 15px;
             transition: all 0.3s ease;
             font-weight: 600;
             font-family: 'Kanit', sans-serif;
-            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
             position: relative;
             overflow: hidden;
             display: none;
+            white-space: nowrap;
         }
 
         .download-pdf-btn.show {
-            display: block;
+            display: inline-block;
         }
 
         .download-pdf-btn::before {
@@ -944,6 +952,41 @@
 
             .payment-options {
                 flex-direction: column;
+            }
+
+            .cart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-title {
+                font-size: 1.5em;
+            }
+
+            .download-pdf-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .about-section {
+                padding: 35px 25px;
+            }
+
+            .about-section .section-title {
+                font-size: 2em;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .about-card {
+                padding: 30px 20px;
+            }
+
+            .about-icon {
+                font-size: 3.5em;
             }
         }
 
@@ -1283,58 +1326,94 @@
 
         /* About Us Section */
         .about-section {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9f4 100%);
+            border-radius: 20px;
+            padding: 50px 40px;
             margin-top: 50px;
             color: #333;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 12px 48px rgba(26, 77, 46, 0.15);
             animation: fadeInUp 0.6s ease-out;
             scroll-margin-top: 120px;
+            border: 3px solid #7bed9f;
+        }
+
+        .about-section .section-title {
+            color: #1a4d2e;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-section .section-title::after {
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
         }
 
         .about-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 35px;
+            margin-top: 40px;
         }
 
         .about-card {
-            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
-            padding: 30px;
-            border-radius: 12px;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fff9 100%);
+            padding: 40px 30px;
+            border-radius: 16px;
             text-align: center;
-            border: 2px solid #e8f5e9;
-            transition: all 0.3s ease;
+            border: 3px solid #7bed9f;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px rgba(123, 237, 159, 0.2);
         }
 
         .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(123, 237, 159, 0.3);
-            border-color: #7bed9f;
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 36px rgba(123, 237, 159, 0.4);
+            border-color: #2d7a4a;
         }
 
         .about-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .about-card h3 {
             color: #1a4d2e;
-            font-size: 1.3em;
-            margin-bottom: 15px;
+            font-size: 1.6em;
+            margin-bottom: 20px;
             font-family: 'Kanit', sans-serif;
+            font-weight: 600;
         }
 
         .about-card p {
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 8px;
+            color: #444;
+            line-height: 1.9;
+            margin-bottom: 10px;
+            font-size: 1.05em;
         }
 
         .about-card strong {
             color: #1a4d2e;
+            font-weight: 600;
+        }
+
+        .location-highlight {
+            background: linear-gradient(135deg, #7bed9f 0%, #a8e6cf 100%);
+            color: #1a4d2e;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: 600;
+            display: inline-block;
         }
 
         /* Footer */
@@ -1519,7 +1598,12 @@
         </div>
 
         <div class="cart-section" id="cart">
-            <h2 class="cart-title">รายการสั่งซื้อ</h2>
+            <div class="cart-header">
+                <h2 class="cart-title">รายการสั่งซื้อ</h2>
+                <button class="download-pdf-btn" id="downloadPdfBtn">
+                    📄 ดูใบเสร็จ
+                </button>
+            </div>
             <div id="cartItems" class="cart-empty">ยังไม่มีรายการสั่งซื้อ</div>
             <div id="cartTotal" style="display: none;" class="cart-total"></div>
 
@@ -1555,9 +1639,6 @@
                 </div>
 
                 <button class="confirm-order-btn" id="confirmOrderBtn" disabled style="opacity: 0.5;">ยืนยันคำสั่งซื้อ</button>
-                <button class="download-pdf-btn" id="downloadPdfBtn">
-                    📄 ดูใบเสร็จ
-                </button>
             </div>
         </div>
 
@@ -1569,19 +1650,31 @@
                     <div class="about-icon">🥤</div>
                     <h3>ร้านนํ้าพี่เฟิร์ส</h3>
                     <p>ร้านเครื่องดื่มสดใหม่ คุณภาพดี รสชาติอร่อย ให้บริการด้วยใจ พร้อมส่งถึงมือคุณ</p>
+                    <p style="margin-top: 15px; font-weight: 500;">✨ มีของกินเล็กๆ น้อยๆ หน้าร้าน ✨</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">📍</div>
+                    <h3>ที่ตั้งร้าน</h3>
+                    <p><strong>อยู่ในโรงอาหาร<br>วิทยาลัยอาชีวศึกษาชุมพร</strong></p>
+                    <div class="location-highlight">🏫 ร้านที่ 3</div>
+                    <p style="margin-top: 15px; color: #666; font-size: 0.95em;">หาง่าย มองเห็นชัดเจน</p>
                 </div>
                 
                 <div class="about-card">
                     <div class="about-icon">📞</div>
                     <h3>ติดต่อเรา</h3>
-                    <p><strong>โทร:</strong> 098-884-8420</p>
+                    <p><strong>โทร:</strong></p>
+                    <p style="font-size: 1.3em; color: #1a4d2e; font-weight: 600; margin: 10px 0;">098-884-8420</p>
+                    <p style="margin-top: 15px; color: #666;">สั่งล่วงหน้าได้เลยค่ะ</p>
                 </div>
                 
                 <div class="about-card">
                     <div class="about-icon">🕐</div>
                     <h3>เวลาทำการ</h3>
-                    <p><strong>เช้า:</strong> 6:00 - 7:50 น.</p>
-                    <p><strong>เที่ยง:</strong> 9:00 - 15:00 น.</p>
+                    <p><strong>🌅 เช้า:</strong> 6:00 - 7:50 น.</p>
+                    <p><strong>☀️ เที่ยง:</strong> 9:00 - 15:00 น.</p>
+                    <p style="margin-top: 15px; color: #dc3545; font-weight: 600;">⚠️ ปิดวันเสาร์-อาทิตย์</p>
                 </div>
             </div>
         </div>
