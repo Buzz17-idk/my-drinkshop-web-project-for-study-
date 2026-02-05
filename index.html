@@ -7,11 +7,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400;500;600&family=Kanit:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -68,11 +74,160 @@
             z-index: 1;
         }
 
+        /* Header Menu Styles */
+        .header-menu {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1a4d2e;
+        }
+
+        .logo-icon {
+            font-size: 1.5em;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-link {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: #e8f5e9;
+            color: #1a4d2e;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, #7bed9f, #a8e6cf);
+            color: #1a4d2e;
+            font-weight: 600;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #1a4d2e;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .header-menu {
+                padding: 15px 20px;
+                border-radius: 20px;
+            }
+
+            .logo-text {
+                font-size: 0.9em;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 20px;
+                right: 20px;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                gap: 0;
+                padding: 20px;
+                border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+                display: none;
+            }
+
+            .nav-links.mobile-active {
+                display: flex;
+                animation: slideDown 0.3s ease-out;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-link {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 12px;
+                margin: 5px 0;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            .mobile-menu-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(8px, 8px);
+            }
+
+            .mobile-menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .mobile-menu-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(7px, -7px);
+            }
+        }
+
         header {
             text-align: center;
             padding: 50px 20px;
             margin-bottom: 50px;
             position: relative;
+            scroll-margin-top: 100px;
         }
 
         header::before {
@@ -161,6 +316,7 @@
 
         .menu-section {
             margin-bottom: 50px;
+            scroll-margin-top: 120px;
         }
 
         .section-title {
@@ -417,6 +573,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             border: 2px solid #e8f5e9;
             animation: slideInScale 0.6s ease-out;
+            scroll-margin-top: 120px;
         }
 
         .cart-title {
@@ -726,6 +883,56 @@
             box-shadow: none;
         }
 
+        .download-pdf-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: 'Kanit', sans-serif;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: none;
+        }
+
+        .download-pdf-btn.show {
+            display: block;
+        }
+
+        .download-pdf-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .download-pdf-btn:hover:not(:disabled)::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .download-pdf-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.4);
+        }
+
+        .download-pdf-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
         @media (max-width: 768px) {
             .drinks-grid {
                 grid-template-columns: 1fr;
@@ -748,11 +955,551 @@
         #confirmSlipBtn:active {
             transform: scale(0.95);
         }
+
+        /* Cart Notification Toast */
+        .cart-notification {
+            position: fixed;
+            top: 100px;
+            right: -400px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 320px;
+            transition: right 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* Drink Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        /* Contact Modal */
+        .contact-modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            padding: 40px;
+            color: #333;
+        }
+
+        .contact-modal h2 {
+            color: #1a4d2e;
+            font-size: 2em;
+            margin-bottom: 25px;
+            text-align: center;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .contact-info-item {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #7bed9f;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(123, 237, 159, 0.2);
+        }
+
+        .contact-info-item .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .contact-info-item h3 {
+            color: #1a4d2e;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .contact-info-item p {
+            color: #666;
+            line-height: 1.8;
+            margin: 5px 0;
+        }
+
+        .contact-info-item a {
+            color: #1a4d2e;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-info-item a:hover {
+            color: #7bed9f;
+        }
+
+        .drink-modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #333;
+            transition: all 0.3s ease;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: #dc3545;
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-content {
+            padding: 30px;
+        }
+
+        .modal-drink-name {
+            font-size: 2em;
+            color: #1a4d2e;
+            font-weight: 600;
+            font-family: 'Kanit', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .modal-description {
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #7bed9f;
+        }
+
+        .modal-price-section {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-price-title {
+            font-size: 1.1em;
+            color: #1a4d2e;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .modal-price-list {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .modal-price-item {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-price-item strong {
+            color: #1a4d2e;
+        }
+
+        .modal-options-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section-title {
+            font-size: 1.1em;
+            color: #1a4d2e;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-add-to-cart {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a4d2e, #2d7a4a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-add-to-cart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 77, 46, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .drink-modal {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+
+            .modal-drink-name {
+                font-size: 1.5em;
+            }
+        }
+
+        .cart-notification.show {
+            right: 30px;
+        }
+
+        .cart-notification-icon {
+            font-size: 2.5em;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .cart-notification-content {
+            flex: 1;
+        }
+
+        .cart-notification-title {
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .cart-notification-message {
+            font-size: 0.9em;
+            opacity: 0.95;
+        }
+
+        .cart-notification-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cart-notification-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .cart-notification {
+                right: -100%;
+                left: auto;
+                min-width: auto;
+                width: calc(100% - 40px);
+            }
+
+            .cart-notification.show {
+                right: 20px;
+            }
+        }
+
+        /* About Us Section */
+        .about-section {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 50px;
+            color: #333;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out;
+            scroll-margin-top: 120px;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .about-card {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #e8f5e9;
+            transition: all 0.3s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(123, 237, 159, 0.3);
+            border-color: #7bed9f;
+        }
+
+        .about-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .about-card h3 {
+            color: #1a4d2e;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .about-card p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .about-card strong {
+            color: #1a4d2e;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #1a4d2e 0%, #2d7a4a 100%);
+            color: white;
+            margin-top: 50px;
+            padding: 40px 30px 20px;
+            border-radius: 16px;
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            color: #7bed9f;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .footer-section p {
+            color: #a8e6cf;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(123, 237, 159, 0.3);
+            padding-top: 20px;
+            text-align: center;
+            color: #a8e6cf;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .about-section {
+                padding: 25px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+                padding: 30px 20px 15px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- Contact Modal -->
+        <div class="modal-overlay" id="contactModal" onclick="closeContactModalOnOverlay(event)">
+            <div class="contact-modal">
+                <button class="modal-close" onclick="closeContactModal()">×</button>
+                <h2>ติดต่อเรา</h2>
+                
+                <div class="contact-info-item">
+                    <div class="icon">🏪</div>
+                    <h3>ร้านนํ้าพี่เฟิร์ส</h3>
+                    <p>เครื่องดื่มสดใหม่ คุณภาพดี รสชาติอร่อย</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <div class="icon">📞</div>
+                    <h3>โทรศัพท์</h3>
+                    <p><a href="tel:0988848420">098-884-8420</a></p>
+                    <p style="font-size: 0.9em; color: #999; margin-top: 5px;">คลิกเพื่อโทร</p>
+                </div>
+
+                <div class="contact-info-item">
+                    <div class="icon">🕐</div>
+                    <h3>เวลาทำการ</h3>
+                    <p><strong>เช้า:</strong> 6:00 - 7:50 น.</p>
+                    <p><strong>เที่ยง:</strong> 9:00 - 15:00 น.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px;">
+                    <p style="color: #7bed9f; font-weight: 600;">🙏 ยินดีให้บริการค่ะ</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drink Detail Modal -->
+        <div class="modal-overlay" id="drinkModal" onclick="closeModalOnOverlay(event)">
+            <div class="drink-modal">
+                <button class="modal-close" onclick="closeDrinkModal()">×</button>
+                <img class="modal-image" id="modalImage" src="" alt="">
+                <div class="modal-content">
+                    <h2 class="modal-drink-name" id="modalDrinkName"></h2>
+                    <div class="modal-description" id="modalDescription"></div>
+                    
+                    <div class="modal-price-section">
+                        <div class="modal-price-title">💰 ราคา</div>
+                        <div class="modal-price-list" id="modalPriceList"></div>
+                    </div>
+
+                    <div class="modal-options-section" id="modalFlavorSection" style="display: none;">
+                        <div class="modal-section-title">🥤 เลือกรส</div>
+                        <select id="modalFlavorSelect" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1em;">
+                        </select>
+                    </div>
+
+                    <div class="modal-options-section">
+                        <div class="modal-section-title">📏 ขนาด</div>
+                        <div class="size-options" id="modalSizeOptions"></div>
+                    </div>
+
+                    <div class="modal-options-section">
+                        <div class="modal-section-title">🔢 จำนวน</div>
+                        <div class="quantity-control">
+                            <button class="qty-btn" onclick="decreaseModalQty()">-</button>
+                            <span class="qty-display" id="modalQty">1</span>
+                            <button class="qty-btn" onclick="increaseModalQty()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="modal-add-to-cart" id="modalAddToCartBtn">
+                            เพิ่มลงตะกร้า
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Notification Toast -->
+        <div class="cart-notification" id="cartNotification">
+            <div class="cart-notification-icon">🛒</div>
+            <div class="cart-notification-content">
+                <div class="cart-notification-title" id="notificationTitle">เพิ่มลงตะกร้าแล้ว!</div>
+                <div class="cart-notification-message" id="notificationMessage"></div>
+            </div>
+            <button class="cart-notification-close" onclick="hideCartNotification()">×</button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="header-menu">
+            <div class="logo">
+                <span class="logo-icon">🥤</span>
+                <span class="logo-text">ร้านนํ้าพี่เฟิร์ส</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">หน้าหลัก</a></li>
+                <li><a href="#" class="nav-link" onclick="event.preventDefault(); openContactModal()">ติดต่อ</a></li>
+            </ul>
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+
+        <header id="home">
             <h1>ร้านนํ้าพี่เฟิร์ส</h1>
             <p class="subtitle">สั่งเครื่องดื่มล่วงหน้า</p>
             <div style="margin-top: 20px; padding: 12px 20px; background: rgba(255, 255, 255, 0.15); border-radius: 25px; display: inline-block; backdrop-filter: blur(10px); border: 1px solid rgba(123, 237, 159, 0.3);">
@@ -760,7 +1507,7 @@
             </div>
         </header>
 
-        <div class="menu-section">
+        <div class="menu-section" id="menu">
             <h2 class="section-title">เครื่องดื่มทั่วไป</h2>
             <p class="section-subtitle">แก้วเล็ก 10 บาท / แก้วใหญ่ 20 บาท / ปั่น +5 บาท</p>
             <div class="drinks-grid" id="regularDrinks"></div>
@@ -771,7 +1518,7 @@
             <div class="drinks-grid" id="specialDrinks"></div>
         </div>
 
-        <div class="cart-section">
+        <div class="cart-section" id="cart">
             <h2 class="cart-title">รายการสั่งซื้อ</h2>
             <div id="cartItems" class="cart-empty">ยังไม่มีรายการสั่งซื้อ</div>
             <div id="cartTotal" style="display: none;" class="cart-total"></div>
@@ -808,8 +1555,63 @@
                 </div>
 
                 <button class="confirm-order-btn" id="confirmOrderBtn" disabled style="opacity: 0.5;">ยืนยันคำสั่งซื้อ</button>
+                <button class="download-pdf-btn" id="downloadPdfBtn">
+                    📄 ดูใบเสร็จ
+                </button>
             </div>
         </div>
+
+        <!-- About Us Section -->
+        <div class="about-section" id="about">
+            <h2 class="section-title">เกี่ยวกับเรา</h2>
+            <div class="about-content">
+                <div class="about-card">
+                    <div class="about-icon">🥤</div>
+                    <h3>ร้านนํ้าพี่เฟิร์ส</h3>
+                    <p>ร้านเครื่องดื่มสดใหม่ คุณภาพดี รสชาติอร่อย ให้บริการด้วยใจ พร้อมส่งถึงมือคุณ</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">📞</div>
+                    <h3>ติดต่อเรา</h3>
+                    <p><strong>โทร:</strong> 098-884-8420</p>
+                </div>
+                
+                <div class="about-card">
+                    <div class="about-icon">🕐</div>
+                    <h3>เวลาทำการ</h3>
+                    <p><strong>เช้า:</strong> 6:00 - 7:50 น.</p>
+                    <p><strong>เที่ยง:</strong> 9:00 - 15:00 น.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ร้านนํ้าพี่เฟิร์ส</h3>
+                    <p>เครื่องดื่มสดใหม่ คุณภาพดี</p>
+                    <p>🥤 สั่งง่าย รับไว ส่งถึงมือ</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>เวลาทำการ</h3>
+                    <p>🌅 เช้า: 6:00 - 7:50 น.</p>
+                    <p>☀️ เที่ยง: 9:00 - 15:00 น.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>ติดต่อ</h3>
+                    <p>📞 098-884-8420</p>
+                    <p style="cursor: pointer; text-decoration: underline;" onclick="openContactModal()">ดูข้อมูลเพิ่มเติม</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 ร้านนํ้าพี่เฟิร์ส. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
 
     <script>
@@ -888,9 +1690,9 @@
             ` : '';
 
             return `
-                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : ''}">
+                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : 'cursor: pointer;'}" onclick="${isAvailable ? `openDrinkModal('${drink.name}', '${drink.image}', ${index}, 'regular')` : ''}">
                     <div class="drink-image" style="position: relative;">
-                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover; ${isAvailable ? 'cursor: pointer;' : ''}">
                         ${outOfStockOverlay}
                     </div>
                     <div class="drink-content">
@@ -898,16 +1700,16 @@
                         <div class="price-info">เล็ก 10฿ / ใหญ่ 20฿ / ปั่น +5฿</div>
                         ${flavorSelection}
                         <div class="size-options" id="size-${index}">
-                            <button class="size-btn active" data-size="เล็ก" data-price="10" ${!isAvailable ? 'disabled' : ''}>เล็ก</button>
-                            <button class="size-btn" data-size="ใหญ่" data-price="20" ${!isAvailable ? 'disabled' : ''}>ใหญ่</button>
-                            <button class="size-btn" data-size="ปั่น" data-price="5" ${!isAvailable ? 'disabled' : ''}>ปั่น +5฿</button>
+                            <button class="size-btn active" data-size="เล็ก" data-price="10" ${!isAvailable ? 'disabled' : ''} onclick="event.stopPropagation()">เล็ก</button>
+                            <button class="size-btn" data-size="ใหญ่" data-price="20" ${!isAvailable ? 'disabled' : ''} onclick="event.stopPropagation()">ใหญ่</button>
+                            <button class="size-btn" data-size="ปั่น" data-price="5" ${!isAvailable ? 'disabled' : ''} onclick="event.stopPropagation()">ปั่น +5฿</button>
                         </div>
                         <div class="quantity-control">
-                            <button class="qty-btn" onclick="decreaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>-</button>
+                            <button class="qty-btn" onclick="event.stopPropagation(); decreaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>-</button>
                             <span class="qty-display" id="qty-${index}">1</span>
-                            <button class="qty-btn" onclick="increaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>+</button>
+                            <button class="qty-btn" onclick="event.stopPropagation(); increaseQty(${index})" ${!isAvailable ? 'disabled' : ''}>+</button>
                         </div>
-                        <button class="add-to-cart" onclick="addToCart('${drink.name}', ${index}, 'regular')" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('${drink.name}', ${index}, 'regular')" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
                             ${isAvailable ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด'}
                         </button>
                     </div>
@@ -924,20 +1726,20 @@
             ` : '';
 
             return `
-                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : ''}">
+                <div class="drink-card" style="${!isAvailable ? 'opacity: 0.6;' : 'cursor: pointer;'}" onclick="${isAvailable ? `openDrinkModal('${drink.name}', '${drink.image}', 'special-${index}', 'special', ${drink.price})` : ''}">
                     <div class="drink-image" style="position: relative;">
-                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <img src="${drink.image}" alt="${drink.name}" style="width: 100%; height: 100%; object-fit: cover; ${isAvailable ? 'cursor: pointer;' : ''}">
                         ${outOfStockOverlay}
                     </div>
                     <div class="drink-content">
                         <div class="drink-name">${drink.name}</div>
                         <div class="price-info">${drink.price} บาท</div>
                         <div class="quantity-control">
-                            <button class="qty-btn" onclick="decreaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>-</button>
+                            <button class="qty-btn" onclick="event.stopPropagation(); decreaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>-</button>
                             <span class="qty-display" id="qty-special-${index}">1</span>
-                            <button class="qty-btn" onclick="increaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>+</button>
+                            <button class="qty-btn" onclick="event.stopPropagation(); increaseQty('special-${index}')" ${!isAvailable ? 'disabled' : ''}>+</button>
                         </div>
-                        <button class="add-to-cart" onclick="addToCart('${drink.name}', 'special-${index}', 'special', ${drink.price})" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('${drink.name}', 'special-${index}', 'special', ${drink.price})" ${!isAvailable ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
                             ${isAvailable ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด'}
                         </button>
                     </div>
@@ -1035,6 +1837,9 @@
 
             cart.push(item);
             updateCart();
+
+            // Show cart notification
+            showCartNotification(drinkName, quantity, flavor);
 
             // Reset quantity to 1
             document.getElementById(`qty-${id}`).textContent = '1';
@@ -1275,6 +2080,20 @@
             // Clear payment slip from session
             sessionStorage.removeItem('paymentSlip');
 
+            // Show download PDF button
+            document.getElementById('downloadPdfBtn').classList.add('show');
+            
+            // Store last order for PDF generation
+            sessionStorage.setItem('lastOrder', JSON.stringify({
+                orderNumber: newOrder.id,
+                customerName: name,
+                customerPhone: phone,
+                items: cart,
+                total: total,
+                paymentMethod: paymentMethod,
+                time: newOrder.time
+            }));
+
             alert(`ยืนยันคำสั่งซื้อสำเร็จ!\n\nชื่อ: ${name}\nเบอร์: ${phone}\n\nรายการสั่งซื้อ:\n${orderDetails}\n\nยอดรวม: ${total} บาท\nวิธีชำระเงิน: ${paymentMethod}\n\nขอบคุณที่ใช้บริการค่ะ!`);
 
             // Reset
@@ -1292,8 +2111,386 @@
             updateConfirmButton();
         });
 
+        // PDF Generation Function - Show Thai Receipt
+        document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+            const lastOrderData = sessionStorage.getItem('lastOrder');
+            if (!lastOrderData) {
+                alert('ไม่พบข้อมูลคำสั่งซื้อ');
+                return;
+            }
+
+            const order = JSON.parse(lastOrderData);
+            generateThaiPDF(order);
+        });
+
+        function generateThaiPDF(order) {
+            // Create a temporary container for the receipt
+            const receiptContainer = document.createElement('div');
+            receiptContainer.style.cssText = `
+                position: absolute;
+                left: -9999px;
+                width: 800px;
+                background: white;
+                padding: 40px;
+                font-family: 'Prompt', sans-serif;
+            `;
+
+            const itemsList = order.items.map(item => {
+                const flavorText = item.flavor ? ` (${item.flavor})` : '';
+                return `
+                    <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 500; color: #333;">${item.name}${flavorText}</div>
+                            <div style="font-size: 14px; color: #666;">${item.size} × ${item.quantity}</div>
+                        </div>
+                        <div style="font-weight: 600; color: #1a4d2e;">${item.total} บาท</div>
+                    </div>
+                `;
+            }).join('');
+
+            receiptContainer.innerHTML = `
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 30px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 32px; font-weight: 700; color: #1a4d2e; margin-bottom: 8px;">
+                            ร้านนํ้าพี่เฟิร์ส
+                        </div>
+                        <div style="font-size: 16px; color: #2d7a4a; font-weight: 500;">
+                            Fresh Drinks & Beverages
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: #1a4d2e; color: white; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 25px;">
+                    <div style="font-size: 20px; font-weight: 600;">ใบเสร็จรับเงิน</div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 4px solid #7bed9f;">
+                        <div style="font-size: 14px; color: #666; margin-bottom: 8px;">
+                            <strong style="color: #1a4d2e;">คำสั่งซื้อ #:</strong> ${order.orderNumber}
+                        </div>
+                        <div style="font-size: 14px; color: #666;">
+                            <strong style="color: #1a4d2e;">วันที่:</strong> ${order.time}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 2px solid #e8f5e9;">
+                        <div style="font-weight: 600; color: #1a4d2e; margin-bottom: 12px; font-size: 16px;">ข้อมูลลูกค้า</div>
+                        <div style="font-size: 14px; color: #333; margin-bottom: 6px;">
+                            <strong>ชื่อ:</strong> ${order.customerName}
+                        </div>
+                        <div style="font-size: 14px; color: #333;">
+                            <strong>เบอร์โทร:</strong> ${order.customerPhone}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <div style="font-weight: 600; color: #1a4d2e; margin-bottom: 15px; font-size: 16px; padding-bottom: 10px; border-bottom: 2px solid #7bed9f;">
+                        รายการสินค้า
+                    </div>
+                    ${itemsList}
+                </div>
+
+                <div style="background: linear-gradient(135deg, #1a4d2e 0%, #2d7a4a 100%); padding: 25px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 20px; font-weight: 600; color: white;">ยอดรวมทั้งหมด:</div>
+                        <div style="font-size: 32px; font-weight: 700; color: #7bed9f;">${order.total} บาท</div>
+                    </div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2);">
+                        <div style="font-size: 14px; color: #a8e6cf;">
+                            <strong>วิธีชำระเงิน:</strong> ${order.paymentMethod === 'qr' ? 'ชำระผ่าน QR Code แล้ว' : 'จ่ายเงินสดหน้าร้าน'}
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; padding: 20px; background: #f9f9f9; border-radius: 8px;">
+                    <div style="font-size: 18px; color: #1a4d2e; font-weight: 600; margin-bottom: 8px;">
+                        ขอบคุณที่ใช้บริการ 🙏
+                    </div>
+                    <div style="font-size: 13px; color: #666;">
+                        กรุณาเก็บใบเสร็จนี้ไว้เป็นหลักฐาน
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(receiptContainer);
+
+            // Use html2canvas to capture the receipt as image, then add to PDF
+            html2canvas(receiptContainer, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false
+            }).then(canvas => {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // A4 width in mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                pdf.save(`Receipt-${order.orderNumber}.pdf`);
+                
+                // Remove temporary container
+                document.body.removeChild(receiptContainer);
+            }).catch(error => {
+                console.error('Error generating PDF:', error);
+                document.body.removeChild(receiptContainer);
+                alert('เกิดข้อผิดพลาดในการสร้าง PDF');
+            });
+        }
+
         // Initialize on load
         initializeDrinks();
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            navLinks.classList.toggle('mobile-active');
+            toggle.classList.toggle('active');
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const navLinks = document.querySelector('.nav-links');
+                const toggle = document.querySelector('.mobile-menu-toggle');
+                navLinks.classList.remove('mobile-active');
+                toggle.classList.remove('active');
+
+                // Update active state
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                if (!this.classList.contains('cart-link')) {
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Cart notification functions
+        let notificationTimeout;
+
+        function showCartNotification(itemName, quantity, flavor = '') {
+            const notification = document.getElementById('cartNotification');
+            const title = document.getElementById('notificationTitle');
+            const message = document.getElementById('notificationMessage');
+
+            const flavorText = flavor ? ` (${flavor})` : '';
+            title.textContent = '✓ เพิ่มลงตะกร้าแล้ว!';
+            message.textContent = `${itemName}${flavorText} x${quantity}`;
+
+            notification.classList.add('show');
+
+            // Clear previous timeout
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+
+            // Auto hide after 3 seconds
+            notificationTimeout = setTimeout(() => {
+                hideCartNotification();
+            }, 3000);
+        }
+
+        function hideCartNotification() {
+            const notification = document.getElementById('cartNotification');
+            notification.classList.remove('show');
+        }
+
+        // Drink Modal Functions
+        let currentModalDrink = null;
+
+        function openDrinkModal(name, image, id, type, price = null) {
+            currentModalDrink = { name, image, id, type, price };
+            
+            const modal = document.getElementById('drinkModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalName = document.getElementById('modalDrinkName');
+            const modalDescription = document.getElementById('modalDescription');
+            const modalPriceList = document.getElementById('modalPriceList');
+            const modalSizeOptions = document.getElementById('modalSizeOptions');
+            const modalFlavorSection = document.getElementById('modalFlavorSection');
+            const modalFlavorSelect = document.getElementById('modalFlavorSelect');
+
+            modalImage.src = image;
+            modalName.textContent = name;
+
+            // Set description based on drink
+            const descriptions = {
+                'เฉาก๊วยนมสด': 'เฉาก๊วยนุ่มๆ ผสมนมสดเข้มข้น หวานมันลงตัว',
+                'ส้ม': 'นํ้าส้มคั้นสด สดชื่น เปรี้ยวหวานกลมกล่อม',
+                'สตอเบอรี่': 'รสชาติสตอเบอรี่เต็มคำ หวานหอม สดชื่น',
+                'อัญชันมะนาว': 'อัญชันผสมมะนาว สีสันสวยงาม สุขภาพดี',
+                'มะพร้าว': 'นํ้ามะพร้าวสด เย็นชื่นใจ คลายร้อน',
+                'นมสด': 'นมสดคุณภาพดี หอมหวาน บำรุงร่างกาย',
+                'โกโก้': 'โกโก้เข้มข้น หอมกลิ่นช็อกโกแลต',
+                'ชาเขียว': 'ชาเขียวหอม กลิ่นชาแท้ หวานน้อย',
+                'ชาเย็น': 'ชาไทยแท้ หอมหวาน สูตรต้นตำรับ',
+                'ชานมไต้หวัน': 'ชานมไข่มุก สไตล์ไต้หวัน เนียนนุ่ม',
+                'กาแฟ': 'กาแฟหอมเข้มข้น ปรุงสดใหม่ทุกแก้ว',
+                'นํ้าอัดลม': 'เครื่องดื่มประเภทโซดา หลายรสชาติให้เลือก สดชื่น ดับกระหาย',
+                'M150ปีโป้': 'เครื่องดื่มชูกำลัง M150 ผสมโค้ก คลายร้อน ชูกำลัง',
+                'นมหมีปีโป้': 'นมหมีแบรนด์ผสมโค้ก หวานมัน อร่อยเด็ด',
+                'เรดี้ปีโป้': 'เรดดี้โคคต้าผสมโค้ก รสชาติแปลกใหม่ ชื่นใจ',
+                'มัทฉะลาเต้': 'ชาเขียวมัทฉะแท้ผสมนม หอมกลิ่นชาญี่ปุ่น',
+                'สตอเบอรี่มัทฉะลาเต้': 'มัทฉะผสมสตอเบอรี่ รสชาติพิเศษ หอมหวานกลมกล่อม'
+            };
+
+            modalDescription.textContent = descriptions[name] || 'เครื่องดื่มคุณภาพดี สดใหม่ทุกแก้ว';
+
+            // Set prices
+            if (type === 'regular') {
+                modalPriceList.innerHTML = `
+                    <div class="modal-price-item"><strong>เล็ก:</strong> 10 บาท</div>
+                    <div class="modal-price-item"><strong>ใหญ่:</strong> 20 บาท</div>
+                    <div class="modal-price-item"><strong>ปั่น:</strong> +5 บาท</div>
+                `;
+                
+                // Size options
+                modalSizeOptions.innerHTML = `
+                    <button class="size-btn active" data-size="เล็ก" data-price="10">เล็ก</button>
+                    <button class="size-btn" data-size="ใหญ่" data-price="20">ใหญ่</button>
+                    <button class="size-btn" data-size="ปั่น" data-price="5">ปั่น +5฿</button>
+                `;
+
+                // Add click handlers for modal size buttons
+                modalSizeOptions.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        modalSizeOptions.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+
+                // Show flavor selector for นํ้าอัดลม
+                if (name === 'นํ้าอัดลม') {
+                    modalFlavorSection.style.display = 'block';
+                    modalFlavorSelect.innerHTML = `
+                        <option value="นํ้าเขียว" ${!isDrinkAvailable('นํ้าเขียว') ? 'disabled' : ''}>นํ้าเขียว ${!isDrinkAvailable('นํ้าเขียว') ? '(หมด)' : ''}</option>
+                        <option value="นํ้าส้ม" ${!isDrinkAvailable('นํ้าส้ม') ? 'disabled' : ''}>นํ้าส้ม ${!isDrinkAvailable('นํ้าส้ม') ? '(หมด)' : ''}</option>
+                        <option value="นํ้าแดง" ${!isDrinkAvailable('นํ้าแดง') ? 'disabled' : ''}>นํ้าแดง ${!isDrinkAvailable('นํ้าแดง') ? '(หมด)' : ''}</option>
+                        <option value="บลูฮาวาย" ${!isDrinkAvailable('บลูฮาวาย') ? 'disabled' : ''}>บลูฮาวาย ${!isDrinkAvailable('บลูฮาวาย') ? '(หมด)' : ''}</option>
+                        <option value="โคล่า" ${!isDrinkAvailable('โคล่า') ? 'disabled' : ''}>โคล่า ${!isDrinkAvailable('โคล่า') ? '(หมด)' : ''}</option>
+                        <option value="องุ่น" ${!isDrinkAvailable('องุ่น') ? 'disabled' : ''}>องุ่น ${!isDrinkAvailable('องุ่น') ? '(หมด)' : ''}</option>
+                        <option value="กีวี่" ${!isDrinkAvailable('กีวี่') ? 'disabled' : ''}>กีวี่ ${!isDrinkAvailable('กีวี่') ? '(หมด)' : ''}</option>
+                        <option value="สุ่ม">สุ่ม (Random)</option>
+                    `;
+                } else {
+                    modalFlavorSection.style.display = 'none';
+                }
+            } else {
+                modalPriceList.innerHTML = `
+                    <div class="modal-price-item"><strong>ราคา:</strong> ${price} บาท</div>
+                `;
+                modalSizeOptions.innerHTML = '';
+                modalFlavorSection.style.display = 'none';
+            }
+
+            // Reset quantity
+            document.getElementById('modalQty').textContent = '1';
+
+            // Set up add to cart button
+            const addBtn = document.getElementById('modalAddToCartBtn');
+            addBtn.onclick = addFromModal;
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrinkModal() {
+            const modal = document.getElementById('drinkModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            currentModalDrink = null;
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target === event.currentTarget) {
+                closeDrinkModal();
+            }
+        }
+
+        function increaseModalQty() {
+            const qtyElement = document.getElementById('modalQty');
+            qtyElement.textContent = parseInt(qtyElement.textContent) + 1;
+        }
+
+        function decreaseModalQty() {
+            const qtyElement = document.getElementById('modalQty');
+            const currentQty = parseInt(qtyElement.textContent);
+            if (currentQty > 1) {
+                qtyElement.textContent = currentQty - 1;
+            }
+        }
+
+        function addFromModal() {
+            if (!currentModalDrink) return;
+
+            const quantity = parseInt(document.getElementById('modalQty').textContent);
+            let price = 0;
+            let size = '';
+            let flavor = '';
+
+            if (currentModalDrink.type === 'regular') {
+                const modalSizeOptions = document.getElementById('modalSizeOptions');
+                const selectedSize = modalSizeOptions.querySelector('.size-btn.active');
+                
+                if (selectedSize) {
+                    size = selectedSize.dataset.size;
+                    const basePrice = parseInt(selectedSize.dataset.price);
+                    price = size === 'ปั่น' ? 20 + 5 : basePrice;
+                }
+
+                // Get flavor if นํ้าอัดลม
+                if (currentModalDrink.name === 'นํ้าอัดลม') {
+                    const flavorSelect = document.getElementById('modalFlavorSelect');
+                    flavor = flavorSelect.value;
+                    
+                    if (flavor !== 'สุ่ม' && !isDrinkAvailable(flavor)) {
+                        alert('ขออภัย ' + flavor + ' หมดแล้วค่ะ กรุณาเลือกรสอื่น');
+                        return;
+                    }
+                }
+            } else {
+                price = currentModalDrink.price;
+                size = 'แก้ว';
+            }
+
+            const item = {
+                name: currentModalDrink.name,
+                size: size,
+                flavor: flavor,
+                price: price,
+                quantity: quantity,
+                total: price * quantity
+            };
+
+            cart.push(item);
+            updateCart();
+            showCartNotification(currentModalDrink.name, quantity, flavor);
+            closeDrinkModal();
+        }
+
+        // Contact Modal Functions
+        function openContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeContactModal() {
+            const modal = document.getElementById('contactModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeContactModalOnOverlay(event) {
+            if (event.target === event.currentTarget) {
+                closeContactModal();
+            }
+        }
     </script>
 </body>
 </html>
